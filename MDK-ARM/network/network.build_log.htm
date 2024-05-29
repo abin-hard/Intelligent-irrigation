@@ -1,0 +1,82 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: ¦ÌVision V5.32.0.0
+Copyright (C) 2020 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: liu bin, nnoo, LIC=RC93N-YT71P-VEKHA-15Y60-QB6KV-1PE1H
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.32.0.0
+Toolchain Path:  D:\workspace\keil5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 7 (build 960)
+Assembler:       Armasm.exe V5.06 update 7 (build 960)
+Linker/Locator:  ArmLink.exe V5.06 update 7 (build 960)
+Library Manager: ArmAr.exe V5.06 update 7 (build 960)
+Hex Converter:   FromElf.exe V5.06 update 7 (build 960)
+CPU DLL:         SARMCM3.DLL V5.32.0.0
+Dialog DLL:      DCM.DLL V1.17.3.0
+Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.8.0
+Dialog DLL:      TCM.DLL V1.46.0.0
+ 
+<h2>Project:</h2>
+D:\workspace\work\network\MDK-ARM\network.uvprojx
+Project File Date:  05/28/2024
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'D:\workspace\keil5\ARM\ARMCC\Bin'
+Build target 'network'
+Note: source file '../Middlewares/Third_Party/LwIP/src/core/tcp.c' - object file renamed from 'network\tcp.o' to 'network\tcp_1.o'.
+compiling main.c...
+../Inc/dht11.h(25): warning:  #1-D: last line of file ends without a newline
+  #endif
+../Inc/relay.h(4): warning:  #1295-D: Deprecated declaration relay_init - give arg types
+  void relay_init();
+../Inc/relay.h(5): warning:  #1295-D: Deprecated declaration relay_set - give arg types
+  void relay_set();  //hight
+../Inc/relay.h(6): warning:  #1295-D: Deprecated declaration relay_reset - give arg types
+  void relay_reset();   //low
+../Inc/relay.h(8): warning:  #1-D: last line of file ends without a newline
+  #endif
+../Inc/adc.h(43): warning:  #1295-D: Deprecated declaration getHumdityValue - give arg types
+  uint32_t getHumdityValue();
+../Src/main.c(71): warning:  #1295-D: Deprecated declaration tcp_task - give arg types
+  void tcp_task();
+../Src/main.c(72): warning:  #1295-D: Deprecated declaration dht11_task - give arg types
+  void dht11_task();
+../Src/main.c(73): warning:  #1295-D: Deprecated declaration bh1750_task - give arg types
+  void bh1750_task();
+../Src/main.c(300): warning:  #177-D: variable "len"  was declared but never referenced
+  			int len = 1024;
+../Src/main.c: 10 warnings, 0 errors
+linking...
+Program Size: Code=81068 RO-data=1364 RW-data=380 ZI-data=44628  
+FromELF: creating hex file...
+"network\network.axf" - 0 Error(s), 10 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.7.0.pack
+                ARM.CMSIS.5.7.0
+                CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.4.0
+
+Package Vendor: Keil
+                https://www.keil.com/pack/Keil.STM32F4xx_DFP.2.17.1.pack
+                Keil.STM32F4xx_DFP.2.17.1
+                STMicroelectronics STM32F4 Series Device Support, Drivers and Examples
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_network
+  D:\workspace\keil5\ARM\CMSIS\5.7.0\CMSIS\Core\Include
+  D:\workspace\keil5\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.4.0
+Build Time Elapsed:  00:00:07
+</pre>
+</body>
+</html>
