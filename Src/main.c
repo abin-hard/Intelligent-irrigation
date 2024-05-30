@@ -1,24 +1,3 @@
-/* USER CODE BEGIN Header */
-/**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2024 STMicroelectronics.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by ST under Ultimate Liberty license
-  * SLA0044, the "License"; You may not use this file except in compliance with
-  * the License. You may obtain a copy of the License at:
-  *                             www.st.com/SLA0044
-  *
-  ******************************************************************************
-  */
-/* USER CODE END Header */
-
-/* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
 #include "lwip.h"
@@ -27,69 +6,26 @@
 #include "socket.h"
 #include <stdio.h>
 #include "dht11.h"
-//#include <tcp.h>
 #include "tim.h"
 #include "relay.h"
 #include "bh1750.h"
 #include "adc.h"
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
 
 void tcp_task();
 void dht11_task();
 void bh1750_task();
-void led() {
-	//while(1) {
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-	HAL_Delay(1000);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
-	HAL_Delay(1000);
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-	//}
-}
-
-
-/* USER CODE END 0 */
-
+void led();
 
 struct all_data{
 	struct DHT11_data dht11;
 	
 	uint16_t bh1750;
-};
+	
+	uint8_t Soil_Moisture;
+} scada;
 
 struct config_data{
 	uint8_t temp;
@@ -97,16 +33,19 @@ struct config_data{
 	
 	uint8_t Soil_Moisture;
 	int isConfig;
-};
+} config;
 
-struct all_data scada;
-struct config_data config;
 
-int get_config_data(char* buffer, struct config_data* data) {  //"t:34&h:55$" == *10t:34&h:55$
-	if(buffer[0] == 't' && buffer[1] == ':' && buffer[4] == '&' && buffer[5] == 'h' && buffer[6] == ':') {
-		data->temp = (buffer[2] - '0') * 10 + (buffer[3] - '0');
-		data->humd = (buffer[7] - '0') * 10 + (buffer[8] - '0');
-		config.isConfig = 1;
+int get_config_data(char* buffer, struct config_data* data) {  //"t:34&h:55$" == *10t:34&h:55$    //m:33$
+//	if(buffer[0] == 't' && buffer[1] == ':' && buffer[4] == '&' && buffer[5] == 'h' && buffer[6] == ':') {
+//		data->temp = (buffer[2] - '0') * 10 + (buffer[3] - '0');
+//		data->humd = (buffer[7] - '0') * 10 + (buffer[8] - '0');
+//		config.isConfig = 1;
+//		return 0;
+//	}
+	if(buffer[0] == 'm' && buffer[1] == ':' && buffer[4] == '$') {
+		data->Soil_Moisture = (buffer[2] - '0') * 10 + (buffer[3] - '0');
+		data->isConfig = 1;
 		return 0;
 	}
 	return -1;
@@ -122,7 +61,7 @@ int write_bh1750_buffer(char* buffer, size_t size) {
 	return 0;
 }
 
-void start_water(int time) { //default 5s
+void start_watering(int time) { //default 5s
 	relay_reset();
 	HAL_Delay(time);
 	relay_set();
@@ -151,30 +90,14 @@ int check_data(char* buffer, char* buf, size_t size) {
 			
 			write_bh1750_buffer(buf, 10);
 		} else if(buffer[2] == '2') {
-			uint32_t data = getHumdityValue();
-			sprintf(buf, "*22M:%d$", (4096 - data) / 4096);
+			
+			sprintf(buf, "*22M:%d$", (4096 - scada.Soil_Moisture) / 4096);
 		} else {
 			sprintf(buf, "scada err\n");
 			return -1;
 		}
 	}
 	return 0;
-}
-
-
-
-uint8_t mm[2] = {0, 0};
-
-void bh1750_test(unsigned char* buffer, uint8_t size) {
-	bh1750_write(0x01);  //
-	bh1750_write(0x07);
-	bh1750_write(0x20);
-	HAL_Delay(180);
-	bh1750_read(buffer, size);
-}
-
-void testt() {
-	HAL_Delay(1000);
 }
 
 int main(void)
@@ -196,10 +119,7 @@ int main(void)
 	MX_ADC1_Init();
 	
 	relay_init();
-	
 
-	
-	//bh1750_test(mm, sizeof(mm));  //test
 	
 	config.isConfig = 0;
 
@@ -207,10 +127,7 @@ int main(void)
 
 
 	xTaskCreate(dht11_task, "dht11", 500, NULL, 1, NULL);
-	//xTaskCreate(bh1750_task, "bh1750", 200, NULL, 1, NULL);
-	//xTaskCreate(led, "led", 500, NULL, 1, NULL);
 	xTaskCreate(tcp_task, "tcp", 500, NULL, 1, NULL);
-	//xTaskCreate(testt, "test", 500, NULL, 1, NULL);
   osKernelStart();
  
   while (1)
@@ -237,16 +154,21 @@ void bh1750_task() {
 void dht11_task() {
 	while(1) {
 		//dht11_task
-		for(int i = 0; i < 4; ++i) {
-			DHT11_Read_Data(&(scada.dht11));
-			if(scada.dht11.err == 0 && config.isConfig == 1 && config.humd > scada.dht11.humidty) {
-				led();
-			//sprintf(test, "cof:%d, scd:%d, now:%d", config.humd, scada.dht11.humidty, data.humidty);
-				start_water(5000);
-				continue;
-			}
-			HAL_Delay(500);
+		scada.Soil_Moisture = getHumdityValue();
+		if(config.Soil_Moisture > scada.Soil_Moisture) {
+			led();
+			start_watering(5000);
 		}
+		
+//		for(int i = 0; i < 4; ++i) {
+		DHT11_Read_Data(&(scada.dht11));
+//			if(scada.dht11.err == 0 && config.isConfig == 1 && config.Soil_Moisture > scada.Soil_Moisture) {
+//				led();
+//				start_water(5000);
+//				continue;
+//			}
+//			HAL_Delay(500);
+//		}
 		//bh1750_task
 		bh1750_write(0x01);  //
 		bh1750_write(0x07);
@@ -257,7 +179,8 @@ void dht11_task() {
 		bh1750_read(buffer, sizeof(buffer));
 		
 		scada.bh1750 = ((uint16_t)buffer[0] << 8) | buffer[1];
-		HAL_Delay(100);
+		
+		HAL_Delay(1000);
 	}
 }
 
@@ -324,6 +247,13 @@ void tcp_task() {
 	}
 }
 
+void led() {
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
+	HAL_Delay(1000);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
+	HAL_Delay(1000);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
+}
 
 void SystemClock_Config(void)
 {
