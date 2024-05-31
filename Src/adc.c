@@ -129,7 +129,7 @@ uint32_t getHumdityValue() {
 	if(n == 3) {
 		return value / n;
 	}
-	return value;
+	return 0;
 	
 }
 

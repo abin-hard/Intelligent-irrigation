@@ -24,12 +24,12 @@ struct all_data{
 	
 	uint16_t bh1750;
 	
-	uint8_t Soil_Moisture;
+	uint32_t Soil_Moisture;
 } scada;
 
 struct config_data{
 	uint8_t temp;
-	uint8_t humd;
+	uint32_t humd;
 	
 	uint8_t Soil_Moisture;
 	int isConfig;
@@ -91,7 +91,7 @@ int check_data(char* buffer, char* buf, size_t size) {
 			write_bh1750_buffer(buf, 10);
 		} else if(buffer[2] == '2') {
 			
-			sprintf(buf, "*22M:%d$", (4096 - scada.Soil_Moisture) / 4096);
+			sprintf(buf, "*22m:%d$", (4096 - scada.Soil_Moisture) * 100 / 4096);
 		} else {
 			sprintf(buf, "scada err\n");
 			return -1;
