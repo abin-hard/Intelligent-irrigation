@@ -1,6 +1,5 @@
 --cpu=Cortex-M4.fp.sp
 "network\startup_stm32f407xx.o"
-"network\tcpserver.o"
 "network\main.o"
 "network\gpio.o"
 "network\freertos.o"

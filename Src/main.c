@@ -31,7 +31,7 @@ struct config_data{
 	uint8_t temp;
 	uint32_t humd;
 	
-	uint8_t Soil_Moisture;
+	uint32_t Soil_Moisture;
 	int isConfig;
 } config;
 
@@ -44,8 +44,8 @@ int get_config_data(char* buffer, struct config_data* data) {  //"t:34&h:55$" ==
 //		return 0;
 //	}
 	if(buffer[0] == 'm' && buffer[1] == ':' && buffer[4] == '$') {
-		data->Soil_Moisture = (buffer[2] - '0') * 10 + (buffer[3] - '0');
-		data->isConfig = 1;
+		config.Soil_Moisture = (buffer[2] - '0') * 10 + (buffer[3] - '0');
+		config.isConfig = 1;
 		return 0;
 	}
 	return -1;
@@ -91,7 +91,7 @@ int check_data(char* buffer, char* buf, size_t size) {
 			write_bh1750_buffer(buf, 10);
 		} else if(buffer[2] == '2') {
 			
-			sprintf(buf, "*22m:%d$", (4096 - scada.Soil_Moisture) * 100 / 4096);
+			sprintf(buf, "*22m:%d$", scada.Soil_Moisture);
 		} else {
 			sprintf(buf, "scada err\n");
 			return -1;
@@ -154,10 +154,12 @@ void bh1750_task() {
 void dht11_task() {
 	while(1) {
 		//dht11_task
-		scada.Soil_Moisture = getHumdityValue();
+		scada.Soil_Moisture = (4096 - getHumdityValue()) * 100 / 4096;
 		if(config.Soil_Moisture > scada.Soil_Moisture) {
 			led();
 			start_watering(5000);
+		} else {
+			led();
 		}
 		
 //		for(int i = 0; i < 4; ++i) {

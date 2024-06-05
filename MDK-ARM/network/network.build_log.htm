@@ -22,7 +22,7 @@ Dialog DLL:      TCM.DLL V1.46.0.0
  
 <h2>Project:</h2>
 D:\workspace\work\network\MDK-ARM\network.uvprojx
-Project File Date:  05/28/2024
+Project File Date:  05/31/2024
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'D:\workspace\keil5\ARM\ARMCC\Bin'
@@ -41,19 +41,21 @@ compiling main.c...
   #endif
 ../Inc/adc.h(43): warning:  #1295-D: Deprecated declaration getHumdityValue - give arg types
   uint32_t getHumdityValue();
-../Src/main.c(71): warning:  #1295-D: Deprecated declaration tcp_task - give arg types
+../Src/main.c(17): warning:  #1295-D: Deprecated declaration tcp_task - give arg types
   void tcp_task();
-../Src/main.c(72): warning:  #1295-D: Deprecated declaration dht11_task - give arg types
+../Src/main.c(18): warning:  #1295-D: Deprecated declaration dht11_task - give arg types
   void dht11_task();
-../Src/main.c(73): warning:  #1295-D: Deprecated declaration bh1750_task - give arg types
+../Src/main.c(19): warning:  #1295-D: Deprecated declaration bh1750_task - give arg types
   void bh1750_task();
-../Src/main.c(300): warning:  #177-D: variable "len"  was declared but never referenced
+../Src/main.c(20): warning:  #1295-D: Deprecated declaration led - give arg types
+  void led();
+../Src/main.c(225): warning:  #177-D: variable "len"  was declared but never referenced
   			int len = 1024;
-../Src/main.c: 10 warnings, 0 errors
+../Src/main.c: 11 warnings, 0 errors
 linking...
-Program Size: Code=81068 RO-data=1364 RW-data=380 ZI-data=44628  
+Program Size: Code=81028 RO-data=1364 RW-data=372 ZI-data=44644  
 FromELF: creating hex file...
-"network\network.axf" - 0 Error(s), 10 Warning(s).
+"network\network.axf" - 0 Error(s), 11 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -76,7 +78,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.4.0
-Build Time Elapsed:  00:00:07
+Build Time Elapsed:  00:00:08
 </pre>
 </body>
 </html>

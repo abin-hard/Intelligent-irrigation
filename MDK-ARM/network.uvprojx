@@ -391,16 +391,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>New Group</GroupName>
-          <Files>
-            <File>
-              <FileName>tcpserver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\tcpserver.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>Application/User</GroupName>
           <Files>
             <File>
